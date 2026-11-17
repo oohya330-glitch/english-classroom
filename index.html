@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lulu Wu 英文互動教室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#24304a; --mute:#6b7489; --bg:#fbf7f0; --card:#fff; --line:#ece4d6;
+  --e:#f2711c;  /* 國小 */
+  --j:#2185d0;  /* 國中 */
+  --s:#21a35b;  /* 高中 */
+  --g:#a03cc8;  /* 學測 */
+  --c:#e0457b;  /* 社群圖卡 */
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:18px}
+.en{font-family:"Baloo 2","Noto Sans TC",sans-serif}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#ffb347 0%,#ff7e5f 55%,#f0577b 100%);color:#fff;padding:44px 24px 70px;text-align:center}
+.hero h1{margin:0;font-size:clamp(2rem,5vw,3.2rem);font-weight:900;letter-spacing:1px}
+.hero h1 .en{font-weight:800}
+.hero p{margin:8px 0 0;font-size:clamp(1rem,2.4vw,1.3rem);opacity:.95}
+.hero .dots span{position:absolute;border-radius:50%;background:rgba(255,255,255,.16)}
+.wave{position:absolute;left:0;right:0;bottom:-1px;height:46px}
+
+main{max-width:1240px;margin:-34px auto 0;padding:0 18px 60px;position:relative}
+
+/* toolbar */
+.bar{background:#fff;border-radius:22px;box-shadow:0 8px 24px rgba(60,40,10,.08);padding:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.chip{border:0;border-radius:999px;padding:10px 20px;font:inherit;font-size:1.05rem;font-weight:700;background:#f3ede2;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px}
+.chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.chip.on{background:var(--ink);color:#fff}
+.search{flex:0 1 300px;display:flex;align-items:center;gap:8px;background:#f6f1e8;border-radius:999px;padding:0 16px}
+.search input{border:0;background:transparent;font:inherit;font-size:1.05rem;padding:11px 0;width:100%;outline:none;color:var(--ink)}
+
+/* sections */
+.sec{margin-top:30px}
+.sec h2{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:1.5rem}
+.sec h2 .tag{color:#fff;border-radius:10px;padding:2px 12px;font-size:1rem}
+.sec h2 small{color:var(--mute);font-weight:500;font-size:1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+
+/* card */
+.card{position:relative;background:var(--card);border-radius:22px;overflow:hidden;box-shadow:0 2px 0 var(--line),0 8px 22px rgba(60,40,10,.06);display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .18s,box-shadow .18s}
+.card:hover{transform:translateY(-4px);box-shadow:0 2px 0 var(--line),0 16px 30px rgba(60,40,10,.12)}
+.card:active{transform:scale(.98)}
+.cover{height:132px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.cover .ic{font-size:4.2rem;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));z-index:1}
+.cover .big{position:absolute;right:-6px;bottom:-26px;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:6.2rem;color:rgba(255,255,255,.28);line-height:1}
+.body{padding:14px 18px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.body h3{margin:0;font-size:1.3rem;line-height:1.35}
+.body p{margin:0;color:var(--mute);font-size:.98rem;line-height:1.5;flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.meta span{font-size:.82rem;font-weight:700;border-radius:8px;padding:2px 9px;background:#f3ede2;color:var(--mute)}
+.meta span.lv{color:#fff}
+.go{margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:1.05rem}
+.go b{border-radius:999px;padding:8px 18px;color:#fff}
+.soon{position:absolute;top:12px;left:12px;background:rgba(36,48,74,.85);color:#fff;font-size:.8rem;font-weight:700;border-radius:8px;padding:3px 10px;z-index:2}
+.card.disabled{cursor:default;opacity:.75}
+.card.disabled:hover{transform:none}
+.empty{text-align:center;color:var(--mute);padding:40px 0;font-size:1.1rem}
+footer{text-align:center;color:#b0a58f;font-size:.9rem;padding:20px 0 30px}
+@media (max-width:600px){.search{flex:1 1 100%}.chip{padding:8px 14px;font-size:.95rem}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="dots"><span style="width:180px;height:180px;left:-40px;top:-50px"></span><span style="width:90px;height:90px;right:8%;top:20px"></span><span style="width:50px;height:50px;left:18%;bottom:40px"></span><span style="width:130px;height:130px;right:-30px;bottom:-30px"></span></div>
+  <h1><span class="en">Lulu Wu</span> 英文互動教室</h1>
+  <p>點卡片，進入每一個互動練習網頁</p>
+  <svg class="wave" viewBox="0 0 1440 46" preserveAspectRatio="none"><path d="M0 26 Q360 0 720 22 T1440 18 V46 H0Z" fill="#fbf7f0"/></svg>
+</header>
+
+<main>
+  <div class="bar">
+    <div class="chips" id="chips"></div>
+    <label class="search">🔍 <input id="q" type="search" placeholder="搜尋：關係代名詞、Unit 4…"></label>
+  </div>
+  <div id="list"></div>
+</main>
+<footer>© Lulu Wu</footer>
+
+<script>
+/* ================================================================
+   ★ 新增網頁：在 PAGES 裡加一筆就好 ★
+   level：'e' 國小、'j' 國中、's' 高中、'g' 學測・指考、'c' 社群圖卡
+   site ：選填，連到社群平台時填 'Threads'、'Instagram'、'Facebook'，按鈕會顯示「到 Threads 看 →」
+   url  ：網頁連結（還沒有連結就留空 ''，卡片會顯示「即將上線」）
+   icon ：卡片圖示（emoji）
+   big  ：卡片右下角的大字（可留空）
+   ================================================================ */
+const PAGES = [
+  /* 社群圖卡範例：
+  { level:'c', title:'學測詞彙題 106', desc:'106 學測詞彙題圖卡，每題附選項中文與實用片語。', tags:['學測','詞彙題','106'], icon:'🃏', big:'106', site:'Threads', url:'https://www.threads.net/…' },
+  */
+  { level:'c', title:'英文學習圖卡（範例）', desc:'Lulu Wu 發布在 Threads 的英文學習圖卡，點開看完整內容。',
+    tags:['Threads','圖卡'], icon:'🃏', big:'Card', site:'Threads', url:'https://www.threads.com/share/_q_NXotBu/' },
+
+  { level:'e', title:'B6 U4 Where Were You?', desc:'地點單字 × 介系詞 in / on / at：圖解、比較、Yes/No 與 Where 問句看圖回答。',
+    tags:['Come to Live','介系詞','地點'], icon:'🏖️', big:'U4', url:'https://claude.ai/artifact/9hfbB1HexatL4ZZrAp4TyY' },
+
+  { level:'e', title:'Alphabet Challenge 字母挑戰', desc:'認識 26 個英文字母，挑戰字母的辨認與練習。',
+    tags:['字母','發音'], icon:'🔤', big:'ABC', url:'https://claude.ai/artifact/Udbk9VidmkbamWDcHqvpA5' },
+
+  { level:'e', title:'Fast Food Fun! 速食英文闖關', desc:'漢堡、薯條、飲料……用闖關方式學速食店的英文單字。',
+    tags:['單字','食物','闖關'], icon:'🍔', big:'Yum', url:'https://claude.ai/artifact/9Ms99cyjGAphay1XZ7jsWv' },
+
+  { level:'j', title:'關係代名詞（國中版）', desc:'who、which、that 的用法與練習。', tags:['文法','關係代名詞'], icon:'🔗', big:'who', url:'https://claude.ai/artifact/E4nUuDiDer9ffp2FahLKEw' },
+  { level:'j', title:'關係代名詞省略 × 關係子句簡化', desc:'看懂哪些關係代名詞可以省略，以及關係子句怎麼簡化。', tags:['文法','關係代名詞'], icon:'✂️', big:'that', url:'https://claude.ai/artifact/7y2vkmsi1qJCJNBDcbR8vB' },
+  { level:'j', title:'when / while', desc:'圖解兩個連接詞的差別，搭配重點整理與練習。', tags:['文法','連接詞'], icon:'⏱️', big:'when', url:'https://claude.ai/artifact/2m2D9mMjkwUGceJq3RkTzu' },
+
+  { level:'s', title:'過去完成式', desc:'時間軸圖解 had + p.p.，重點與練習。', tags:['文法','時態'], icon:'🕰️', big:'had', url:'https://claude.ai/artifact/EHinzPRH9SJytsGAXsuCN5' },
+
+];
+
+const LV = { e:['國小','var(--e)','#fff1e6'], j:['國中','var(--j)','#e6f2fc'], s:['高中','var(--s)','#e5f7ec'], g:['學測・指考','var(--g)','#f5e9fb'], c:['社群圖卡','var(--c)','#fde8ef'] };
+let filter='all';
+
+const chips=document.getElementById('chips');
+chips.innerHTML=`<button class="chip on" data-f="all">全部</button>`+Object.entries(LV).map(([k,[n,c]])=>`<button class="chip" data-f="${k}"><i style="background:${c}"></i>${n}</button>`).join('');
+chips.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{filter=b.dataset.f;chips.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()});
+document.getElementById('q').oninput=render;
+
+function card(p){
+  const [n,c,l]=LV[p.level], has=!!p.url;
+  const tag=has?'a':'div';
+  return `<${tag} class="card ${has?'':'disabled'}" ${has?`href="${p.url}" target="_blank" rel="noopener"`:''}>
+    ${has?'':'<span class="soon">即將上線</span>'}
+    <div class="cover" style="background:linear-gradient(135deg,${l},${c})"><span class="ic">${p.icon}</span><span class="big">${p.big||''}</span></div>
+    <div class="body">
+      <h3>${p.title}</h3><p>${p.desc}</p>
+      <div class="meta"><span class="lv" style="background:${c}">${n}</span>${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+      <div class="go"><span style="color:${c}">${has?'':'　'}</span><b style="background:${has?c:'#c9c2b5'}">${has?(p.site?'到 '+p.site+' 看 →':'進入 →'):'製作中'}</b></div>
+    </div></${tag}>`;
+}
+function render(){
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  const hit=p=>(filter==='all'||p.level===filter)&&(!q||(p.title+p.desc+p.tags.join(' ')).toLowerCase().includes(q));
+  const html=Object.entries(LV).map(([k,[n,c]])=>{
+    const ps=PAGES.filter(p=>p.level===k&&hit(p)); if(!ps.length)return '';
+    return `<section class="sec"><h2><span class="tag" style="background:${c}">${n}</span><small>${ps.length} 個${k==='c'?'圖卡':'網頁'}</small></h2><div class="grid">${ps.map(card).join('')}</div></section>`;
+  }).join('');
+  document.getElementById('list').innerHTML=html||`<div class="empty">${filter!=='all'&&!q?'這裡還沒有內容，敬請期待 ✨':'找不到符合的網頁 🙈'}</div>`;
+}
+render();
+</script>
+</body>
+</html>
