@@ -14,6 +14,7 @@
   --s:#21a35b;  /* 高中 */
   --g:#a03cc8;  /* 學測 */
   --c:#e0457b;  /* 社群圖卡 */
+  --t:#a0763f;  /* 教師工具 */
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC",system-ui,sans-serif;font-size:18px}
@@ -65,6 +66,9 @@ main{max-width:1240px;margin:-34px auto 0;padding:0 18px 60px;position:relative}
 .go{margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:1.05rem}
 .go b{border-radius:999px;padding:8px 18px;color:#fff}
 .soon{position:absolute;top:12px;left:12px;background:rgba(36,48,74,.85);color:#fff;font-size:.8rem;font-weight:700;border-radius:8px;padding:3px 10px;z-index:2}
+.card.ext{box-shadow:none;border:2px dashed #dccdb4}
+.card.ext:hover{box-shadow:0 12px 26px rgba(60,40,10,.10)}
+.meta span.x{background:#fff;border:1px solid #d6c7ad;color:#8a7556}
 .card.disabled{cursor:default;opacity:.75}
 .card.disabled:hover{transform:none}
 .empty{text-align:center;color:var(--mute);padding:40px 0;font-size:1.1rem}
@@ -97,7 +101,8 @@ footer{text-align:center;color:#b0a58f;font-size:.9rem;padding:20px 0 30px}
 <script>
 /* ================================================================
    ★ 新增網頁：在 PAGES 裡加一筆就好 ★
-   level：'e' 國小、'j' 國中、's' 高中、'g' 學測・指考、'c' 社群圖卡
+   level：'e' 國小、'j' 國中、's' 高中、't' 教師工具、'g' 學測・指考、'c' 社群圖卡
+   ext  ：別人做的網站填 ext:true，卡片會顯示「外部資源」標籤（只放名稱，desc 留空、tags 留 []）
    site ：選填，連到社群平台時填 'Threads'、'Instagram'、'Facebook'，按鈕會顯示「到 Threads 看 →」
    url  ：網頁連結（還沒有連結就留空 ''，卡片會顯示「即將上線」）
    icon ：卡片圖示（emoji）
@@ -119,15 +124,21 @@ const PAGES = [
   { level:'e', title:'Snack Time! 點心飲料英文闖關', desc:'點心飲料單字 × want some / don\'t want any、可數與不可數，What 與 Do / Does 問句看圖回答。',
     tags:['單字','some / any','可數不可數'], icon:'🍪', big:'some', url:'https://claude.ai/artifact/7kdZ89hx9x5e9i6ag6CZE1' },
 
+  /* ── 外部資源（別人做的網站）── */
+  { level:'e', ext:true, title:'Duck English', desc:'', tags:[], icon:'🦆', big:'Duck', url:'https://duckenglish.com' },
+  { level:'e', ext:true, title:'何嘉仁數位練習平台', desc:'', tags:[], icon:'📘', big:'Hess', url:'https://hessdigi.hess.com.tw/DigiLink/05' },
+
   { level:'j', title:'關係代名詞（國中版）', desc:'who、which、that 的用法與練習。', tags:['文法','關係代名詞'], icon:'🔗', big:'who', url:'https://claude.ai/artifact/E4nUuDiDer9ffp2FahLKEw' },
   { level:'j', title:'關係代名詞省略 × 關係子句簡化', desc:'看懂哪些關係代名詞可以省略，以及關係子句怎麼簡化。', tags:['文法','關係代名詞'], icon:'✂️', big:'that', url:'https://claude.ai/artifact/7y2vkmsi1qJCJNBDcbR8vB' },
   { level:'j', title:'when / while', desc:'圖解兩個連接詞的差別，搭配重點整理與練習。', tags:['文法','連接詞'], icon:'⏱️', big:'when', url:'https://claude.ai/artifact/2m2D9mMjkwUGceJq3RkTzu' },
 
   { level:'s', title:'過去完成式', desc:'時間軸圖解 had + p.p.，重點與練習。', tags:['文法','時態'], icon:'🕰️', big:'had', url:'https://claude.ai/artifact/EHinzPRH9SJytsGAXsuCN5' },
 
+  { level:'t', ext:true, title:'班級儀表板', desc:'', tags:[], icon:'⏰', big:'', url:'https://ckj1022-art.github.io/classdashboard/' },
+
 ];
 
-const LV = { e:['國小','var(--e)','#fff1e6'], j:['國中','var(--j)','#e6f2fc'], s:['高中','var(--s)','#e5f7ec'] };
+const LV = { e:['國小','var(--e)','#fff1e6'], j:['國中','var(--j)','#e6f2fc'], s:['高中','var(--s)','#e5f7ec'], t:['教師工具','var(--t)','#f6ecdd'] };
 // 之後要加回分類：在上面加 g:['學測・指考','var(--g)','#f5e9fb'] 或 c:['社群圖卡','var(--c)','#fde8ef']
 let filter='all';
 
@@ -139,18 +150,18 @@ document.getElementById('q').oninput=render;
 function card(p){
   const [n,c,l]=LV[p.level], has=!!p.url;
   const tag=has?'a':'div';
-  return `<${tag} class="card ${has?'':'disabled'}" ${has?`href="${p.url}" target="_blank" rel="noopener"`:''}>
+  return `<${tag} class="card ${has?'':'disabled'} ${p.ext?'ext':''}" ${has?`href="${p.url}" target="_blank" rel="noopener"`:''}>
     ${has?'':'<span class="soon">即將上線</span>'}
     <div class="cover" style="background:linear-gradient(135deg,${l},${c})"><span class="ic">${p.icon}</span><span class="big">${p.big||''}</span></div>
     <div class="body">
       <h3>${p.title}</h3><p>${p.desc}</p>
-      <div class="meta"><span class="lv" style="background:${c}">${n}</span>${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
+      <div class="meta"><span class="lv" style="background:${c}">${n}</span>${p.ext?'<span class="x">外部資源</span>':''}${p.tags.map(t=>`<span>${t}</span>`).join('')}</div>
       <div class="go"><span style="color:${c}">${has?'':'　'}</span><b style="background:${has?c:'#c9c2b5'}">${has?(p.site?'到 '+p.site+' 看 →':'進入 →'):'製作中'}</b></div>
     </div></${tag}>`;
 }
 function render(){
   const q=document.getElementById('q').value.trim().toLowerCase();
-  const hit=p=>(filter==='all'||p.level===filter)&&(!q||(p.title+p.desc+p.tags.join(' ')).toLowerCase().includes(q));
+  const hit=p=>(filter==='all'||p.level===filter)&&(!q||(p.title+p.desc+p.tags.join(' ')+(p.ext?' 外部資源':'')).toLowerCase().includes(q));
   const html=Object.entries(LV).map(([k,[n,c]])=>{
     const ps=PAGES.filter(p=>p.level===k&&hit(p)); if(!ps.length)return '';
     return `<section class="sec"><h2><span class="tag" style="background:${c}">${n}</span><small>${ps.length} 個${k==='c'?'圖卡':'網頁'}</small></h2><div class="grid">${ps.map(card).join('')}</div></section>`;
